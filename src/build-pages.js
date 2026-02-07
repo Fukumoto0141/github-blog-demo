@@ -1,5 +1,5 @@
 import { Octokit } from "octokit";
-import { readFileSync, writeFileSync } from "fs";
+import { mkdirSync, readFileSync, writeFileSync } from "fs";
 import Mustache from "mustache";
 import dotenv from "dotenv";
 
@@ -65,8 +65,14 @@ octokit.rest.issues.listForRepo({
 		target_issue.issue_html = issue_html
 		console.log("target_issue: ", target_issue)
 
+		try {
+			mkdirSync("posts", { recursive: true });
+		} catch (err) {
+			throw new Error(`Failed to ensure posts directory: ${err.message}`);
+		}
+
 		const issue_page = Mustache.render(issue_template, target_issue)
-		writeFileSync("posts/" + process.env.TARGET_ISSUE_ID + ".html", issue_page, "utf8");
+		writeFileSync(`posts/${targetIssueId}.html`, issue_page, "utf8");
 	})
 
 });
