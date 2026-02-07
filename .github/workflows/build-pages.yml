@@ -1,0 +1,44 @@
+name: Build Pages
+on:
+  issues:
+    types: [opened, edited]
+
+env:
+  OWNER: ${{ github.repository_owner }}
+  REPO: ${{ github.event.repository.name }}
+  TARGET_ISSUE_ID: ${{ github.event.issue.id }}
+
+jobs:
+  build-pages:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout blog repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build pages
+        run: node src/build-pages.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Git setting
+        run: |
+          git config --local user.email "${{ github.actor }}@users.noreply.github.com"
+          git config --local user.name "${{ github.actor }}"
+          
+      - name: Commit and push pages
+        run: |
+          git add index.html posts/${{github.event.issue.id}}.html
+          git diff --cached --quiet || git commit -m "update"
+          git pull --rebase
+          git push origin main

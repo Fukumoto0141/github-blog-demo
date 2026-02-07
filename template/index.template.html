@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GitHub Blog</title>
+    <style>
+      body { font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 32px; }
+      header { margin-bottom: 24px; }
+      ul { list-style: none; padding: 0; }
+      li { padding: 12px 0; border-bottom: 1px solid #eee; }
+      a { color: #0b5fff; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .meta { color: #666; font-size: 0.9rem; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>GitHub Blog</h1>
+      <p class="meta">{{owner}} / {{repo}}</p>
+    </header>
+    <main>
+      <ul>
+        {{#data}}
+          <li>
+            <a href="posts/{{id}}.html">{{title}}</a>
+            <div class="meta">Updated: {{updated_at_short}}</div>
+          </li>
+        {{/data}}
+      </ul>
+    </main>
+  </body>
+</html>
